@@ -47,21 +47,10 @@ async function run() {
             const result = await userCollection.insertOne(user);
             res.send(result);
         })
-
-
-
-
-        // task api
+        // tasks api
         // to get all the tasks
         app.get('/tasks', async (req, res) => {
             const result = await taskCollection.find().toArray();
-            res.send(result);
-        })
-        // to get a specific task
-        app.get('/taskdetails/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: new ObjectId(id) }
-            const result = await taskCollection.findOne(query);
             res.send(result);
         })
         // for adding a task
@@ -71,7 +60,7 @@ async function run() {
             res.send(result);
         });
         // for updating a task
-        app.patch('/tasks/update/:id', async (req, res) => {
+        app.put('/tasks/update/:id', async (req, res) => {
             const task = req.body;
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) }
