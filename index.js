@@ -33,6 +33,7 @@ async function run() {
         // await client.connect();
 
         const userCollection = client.db('sccTech').collection('users');
+        const taskCollection = client.db('sccTech').collection('tasks');
 
         // user api
         // for posting/adding individual user
@@ -46,6 +47,47 @@ async function run() {
             const result = await userCollection.insertOne(user);
             res.send(result);
         })
+
+
+
+
+        // task api
+        // to get all the tasks
+        app.get('/tasks', async (req, res) => {
+            const result = await taskCollection.find().toArray();
+            res.send(result);
+        })
+        // for adding a task
+        app.post('/tasks', async (req, res) => {
+            const task = req.body;
+            const result = await taskCollection.insertOne(task);
+            res.send(result);
+        });
+        // for updating a task
+        app.patch('/tasks/update/:id', async (req, res) => {
+            const task = req.body;
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+            const updatedDoc = {
+                $set: {
+                    title: task.title,
+                    description: task.description,
+                    deadline: task.deadline,
+                    priority: task.priority,
+                }
+            }
+            const result = await taskCollection.updateOne(filter, updatedDoc)
+            res.send(result);
+        })
+        // for deleting a meal by admin
+        app.delete('/tasks/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await taskCollection.deleteOne(query);
+            res.send(result);
+        })
+
+
 
 
 
